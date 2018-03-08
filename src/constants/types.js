@@ -1,1 +1,6 @@
-export const FETCH_USER='fetch_user';
+export const SIGN_UP_SUCCESS='SIGNUPSUCCESS';
+export const SIGN_IN_SUCCESS='SIGNINSUCCESS';
+export const GET_NOTES = "GETNOTES";
+export const ADD_NOTE_SUCCESS = "ADDNOTESUCCESS";
+export const DELETE_NOTE_SUCCESS = "DELETENOTESUCCESS";
+export const UPDATE_NOTE_SUCCESS = "UPDATE_NOTE_SUCCESS";
