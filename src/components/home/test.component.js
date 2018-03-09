@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class Test extends Component {
     componentWillMount(){
-        debugger
+        
     }
     render() {
         return (

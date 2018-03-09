@@ -2,32 +2,69 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as note from '../../actions/noteActions';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+
 
 class NoteDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            title: '',
+            description: ''
         };
-        // this.handleClose = this.handleClose.bind(this)
+        this.handleBack = this.handleBack.bind(this)
     }
     componentWillMount() {
-        debugger
+        
         let id = this.props.match.params.id
-        // this.props.actions.getNote()
+        this.props.actions.getNote(id)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        
+        if (nextProps.note) {
+            this.setState({
+                title: nextProps.note.title,
+                description: nextProps.note.description
+            })
+        }
+    }
+
+    handleBack() {
+        
+        this.props.history.push('/app')
     }
     render() {
+        const actions = [
+            <FlatButton
+                label="Back"
+                onClick={this.handleBack}
+            />
+        ];
         return (
             <div>
-                <h1>Notes details</h1>
+                <MuiThemeProvider>
+                    <Card>
+                        <CardTitle title={this.state.title ? this.state.title : '-'} className="note_title" />
+                        <CardText>
+                            {this.state.description ? this.state.description : '-'}
+                        </CardText>
+                    </Card>
+                    <div className="modal_btn">
+                        {actions}
+                    </div>
+                </MuiThemeProvider>
             </div>
         );
     }
 };
 //this tells what state should expose on props
 function mapStateToProps(state, ownProps) {
-    debugger
+    
     return {
-        notes: state.noteData.notes
+        note: state.noteData.note
     };
 }
 // this tells what action should expose on props bindActionCreators is used to

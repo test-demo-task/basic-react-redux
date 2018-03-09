@@ -55,15 +55,17 @@ class LoginSignUp extends Component {
   }
   render() {
     return (
-      <div style={{textAlign:'center'}}>
+      <div style={{textAlign:'center'}}  className="login-page">
+        <div className="login">
         {this.state.loginscreen}
-        <div>
+        <div >
           {this.state.loginmessage}
           <MuiThemeProvider>
             <div>
                <RaisedButton label={this.state.buttonLabel} primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
            </div>
           </MuiThemeProvider>
+        </div>
         </div>
       </div>
     );

@@ -9,32 +9,84 @@ class AddNote extends Component {
         super(props);
         this.state = {
             title: '',
-            description: ''
+            description: '',
+            formErrors: { title: '', description: '' },
+            titleValid: false,
+            descriptionValid: false,
+            formValid: false
         }
-        this.handleCancel = this.handleCancel.bind(this)
-        this.handleAdd=this.handleAdd.bind(this)
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
+        this.validateField = this.validateField.bind(this);
+        this.validateForm = this.validateForm.bind(this);
+        this.handleUserInput = this.handleUserInput.bind(this);
+    }
+    handleUserInput(e) {
+          
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState({ [name]: value },
+            () => { this.validateField(name, value) });
     }
 
+    validateField(fieldName, value) {
+          
+        let fieldValidationErrors = this.state.formErrors;
+        let titleValid = this.state.titleValid;
+        let descriptionValid = this.state.descriptionValid;
+
+        switch (fieldName) {
+            case 'title':
+                titleValid = value.length > 0;
+                fieldValidationErrors.title = titleValid ? '' : 'Title is required';
+                break;
+            case 'description':
+                descriptionValid = value.length > 0;
+                fieldValidationErrors.description = descriptionValid ? '' : 'Description is required';
+                break;
+            default:
+                break;
+        }
+        this.setState({
+            formErrors: fieldValidationErrors,
+            titleValid: titleValid,
+            descriptionValid: descriptionValid
+        }, this.validateForm);
+    }
+
+    validateForm() {
+          
+        this.setState({ formValid: this.state.titleValid && this.state.descriptionValid });
+    }
     handleCancel() {
-        debugger
+          
+        let fieldValidationErrors = this.state.formErrors;
+        fieldValidationErrors.description = ''
+        fieldValidationErrors.title = ''
         this.setState({
             title: '',
-            description: ''
+            description: '',
+            formErrors: fieldValidationErrors
         })
         this.props.handleModal()
     }
 
     handleAdd() {
-        debugger
+          
         let data = {
             userId: localStorage.userId,
             title: this.state.title,
             description: this.state.description
         }
         this.props.handleAdd(data)
+        let fieldValidationErrors = this.state.formErrors;
+        fieldValidationErrors.description = ''
+        fieldValidationErrors.title = ''
         this.setState({
             title: '',
-            description: ''
+            description: '',
+            formErrors: fieldValidationErrors,
+            formValid:false
         })
     }
 
@@ -47,32 +99,38 @@ class AddNote extends Component {
             <FlatButton
                 label="Add Note"
                 primary={true}
-                onClick={this.handleAdd}
+                disabled={!this.state.formValid}
+                onClick={(event) => this.handleAdd(event)}
             />,
         ];
 
         return (
             <Dialog
-                title="Add"
+                title="Add Note"
                 modal={true}
-                open={this.props.open}
+                open={this.props.open} className="mdoal_pop"
             >
                 <form>
                     <TextField
                         hintText="title"
                         floatingLabelText="Title"
+                        name="title"
                         fullWidth={true}
-                        onChange={(event, newValue) => this.setState({ title: newValue })}
+                        errorText={this.state.formErrors.title ? this.state.formErrors.title : ''}
+                        onChange={this.handleUserInput}
                     />
                     <br />
                     <TextField
                         hintText="description"
                         floatingLabelText="Description"
+                        name="description"
                         fullWidth={true}
                         multiLine={true}
-                        onChange={(event, newValue) => this.setState({ description: newValue })}
+                        errorText={this.state.formErrors.description ? this.state.formErrors.description : ''}
+                        onChange={this.handleUserInput}
                     />
-                    <div>
+                    
+                    <div className="modal_btn">
                         {actions}
                     </div>
                 </form>

@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-
+import { ToastContainer, toast } from 'react-toastify';
 import * as signup from '../../actions/authActions';
 
 class SignUp extends Component {
@@ -14,21 +14,29 @@ class SignUp extends Component {
       email: '',
       password: '',
       username: '',
-      formErrors: {email: '', password: '',username:''},
+      formErrors: { email: '', password: '', username: '' },
       emailValid: false,
       passwordValid: false,
-      usernameValid:false,
+      usernameValid: false,
       formValid: false
     }
-    this.handleUserInput=this.handleUserInput.bind(this);
-    this.validateField=this.validateField.bind(this);
-    this.validateForm=this.validateForm.bind(this);
+    this.handleUserInput = this.handleUserInput.bind(this);
+    this.validateField = this.validateField.bind(this);
+    this.validateForm = this.validateForm.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     debugger
     if (nextProps.signup) {
-      this.props.history.push('/')
+      if (nextProps.signup.signup) {
+        toast.success('User registered successfully, please login')
+        setTimeout(function () {
+          this.props.parentContext.handleClick()
+        }.bind(this), 2000);
+      }
+      else {
+        toast.error('Some error occured, please try again')
+      }
     }
   }
 
@@ -67,7 +75,7 @@ class SignUp extends Component {
       formErrors: fieldValidationErrors,
       emailValid: emailValid,
       passwordValid: passwordValid,
-      usernameValid:usernameValid
+      usernameValid: usernameValid
     }, this.validateForm);
   }
 
@@ -85,18 +93,20 @@ class SignUp extends Component {
     }
     this.props.actions.signUp(payload);
   }
-  
+
   render() {
     return (
       <div>
         <MuiThemeProvider>
           <div>
+            <h2>Sign Up</h2>
+            <hr />
             <TextField
               hintText="Enter your username"
               type="username"
               name="username"
               floatingLabelText="Username"
-              errorText={this.state.formErrors.username?this.state.formErrors.username:''}
+              errorText={this.state.formErrors.username ? this.state.formErrors.username : ''}
               onChange={this.handleUserInput}
             />
             <br />
@@ -105,7 +115,7 @@ class SignUp extends Component {
               type="email"
               name="email"
               floatingLabelText="Email"
-              errorText={this.state.formErrors.email?this.state.formErrors.email:''}
+              errorText={this.state.formErrors.email ? this.state.formErrors.email : ''}
               onChange={this.handleUserInput}
             />
             <br />
@@ -114,13 +124,15 @@ class SignUp extends Component {
               name="password"
               hintText="Enter your Password"
               floatingLabelText="Password"
-              errorText={this.state.formErrors.password?this.state.formErrors.password:''}
+              errorText={this.state.formErrors.password ? this.state.formErrors.password : ''}
               onChange={this.handleUserInput}
             />
             <br />
             <RaisedButton label="Sign Up" disabled={!this.state.formValid} primary={true} style={style} onClick={(event) => this.handleClick(event)} />
           </div>
+          <hr />
         </MuiThemeProvider>
+        <ToastContainer />
       </div>
     );
   }

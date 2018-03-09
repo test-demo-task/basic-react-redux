@@ -4,7 +4,7 @@ import axios from 'axios';
 import history from '../history';
 
 export function addNote(data) {
-    debugger
+     
     return function (dispatch, getState) {
         axios.post(api.ADD_NOTE, data, {
             headers: {
@@ -13,7 +13,7 @@ export function addNote(data) {
             }
         })
             .then(function (response) {
-                debugger
+                 
                 if (response.data.status == 200) {
                     return dispatch({ type: types.ADD_NOTE_SUCCESS, note: response.data.data })
                 } else if (response.data.status == 403) {
@@ -31,7 +31,7 @@ export function addNote(data) {
 }
 
 export function getNotes(userId) {
-    debugger
+     
     return function (dispatch, getState) {
         axios.get(api.GET_NOTES + userId, {
             headers: {
@@ -40,7 +40,7 @@ export function getNotes(userId) {
             }
         })
             .then(function (response) {
-                debugger
+                 
                 if (response.data.status == 200) {
                     return dispatch({ type: types.GET_NOTES, notes: response.data.notes })
                 } else if (response.data.status == 201) {
@@ -58,7 +58,7 @@ export function getNotes(userId) {
 }
 
 export function deleteNote(userId) {
-    debugger
+     
     return function (dispatch, getState) {
         axios.get(api.DELETE_NOTE + userId, {
             headers: {
@@ -67,7 +67,7 @@ export function deleteNote(userId) {
             }
         })
             .then(function (response) {
-                debugger
+                 
                 if (response.data.status == 200) {
                     return dispatch({ type: types.DELETE_NOTE_SUCCESS, noteId: userId })
                 } else if (response.data.status == 201) {
@@ -85,7 +85,7 @@ export function deleteNote(userId) {
 }
 
 export function updateNote(data) {
-    debugger
+     
     return function (dispatch, getState) {
         axios.post(api.UPDATE_NOTE, data, {
             headers: {
@@ -94,10 +94,35 @@ export function updateNote(data) {
             }
         })
             .then(function (response) {
-                debugger
+                 
                 if (response.data.status == 200) {
                     return dispatch({ type: types.UPDATE_NOTE_SUCCESS, updatedNote: response.data.updatedNote })
                 } else if (response.data.status == 403) {
+                    // localStorage.clear();
+                    // browserHistory.push('/signin');
+                    // toastr.error(response.data.message);
+                }
+                else {
+                    // toastr.error(response.data.message);
+                }
+            })
+            .catch(function (error) {
+            });
+    }
+}
+
+export function getNote(userId) {
+    return function (dispatch, getState) {
+        axios.get(api.GET_NOTE_DETAIL + userId, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.token
+            }
+        })
+            .then(function (response) {
+                if (response.data.status == 200) {
+                    return dispatch({ type: types.GET_NOTE_SUCCESS, note: response.data.data })
+                } else if (response.data.status == 201) {
                     // localStorage.clear();
                     // browserHistory.push('/signin');
                     // toastr.error(response.data.message);

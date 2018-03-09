@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
-
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import '../styles/custom.css';
+import history from './../history'
 //components
 import LoginSignUp from './loginsignup';
 import Dashboard from './home';
-
+import NoteDetail from './home/noteDetail.component';
+import NotesList from './home/notesList.component';
 class App extends Component {
     render() {
         return (
             <div className="container">
-                <BrowserRouter>
-                    <div>
-                        <Route exact path="/" component={LoginSignUp} />
-                        <Route exact path="/app" component={Dashboard} />
+                <div>
+                    <Switch>
+                        <Route exact path="/" component={LoginSignUp} exact />
+                        <Dashboard>
+                            <Route exact path="/app" component={NotesList} />
+                            <Route exact path="/app/:id/:title" component={NoteDetail} />
+                        </Dashboard>
                         {/* <Route path="*" render={props => <Dashboard {...props} />} /> */}
-                    </div>
-                </BrowserRouter>
+                    </Switch>
+                </div>
             </div>
         );
     }

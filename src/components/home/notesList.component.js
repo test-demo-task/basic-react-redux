@@ -8,7 +8,7 @@ import AddNote from '../home/add.component';
 import EditNote from '../home/edit.component';
 import DeleteNote from '../home/delete.component';
 import AddButton from '../home/addbutton.component';
-
+import { ToastContainer, toast } from 'react-toastify';
 import * as note from '../../actions/noteActions';
 
 class NotesList extends Component {
@@ -20,6 +20,7 @@ class NotesList extends Component {
             description: '',
             deleteOpen: false,
             editOpen: false,
+            detailOpen: false,
             id: '',
             notes: []
         };
@@ -29,18 +30,18 @@ class NotesList extends Component {
         this.handleDeleteClose = this.handleDeleteClose.bind(this)
         this.handleDelete = this.handleDelete.bind(this)
         this.handleEditOpen = this.handleEditOpen.bind(this)
-        this.handleDetails=this.handleDetails.bind(this)
+        this.handleDetails = this.handleDetails.bind(this)
     }
 
     componentWillMount() {
-        debugger
+        
         let userId = localStorage.userId;
         this.props.actions.getNotes(userId)
     }
 
     componentWillReceiveProps(nextProps) {
-        debugger
-        if (nextProps.notes.length) {
+        
+        if (nextProps.notes) {
             this.setState({ notes: nextProps.notes })
             // this.props.parentContext.props.history.push('/app')
         }
@@ -51,23 +52,25 @@ class NotesList extends Component {
     }
 
     handleClose() {
-        debugger
+        
         this.setState({ open: !this.state.open })
     }
 
     handleAdd(data) {
-        debugger
+        
         this.props.actions.addNote(data)
         this.setState({ open: !this.state.open })
+        toast.success('Note added sucessfully.')
     }
 
     handleDeleteClose() {
-        debugger
+        
         this.setState({ deleteOpen: !this.state.deleteOpen, id: '' })
+        
     }
 
     handleDeleteOpen(index) {
-        debugger
+        
         let currentData = this.state.notes
         let res = currentData[index]._id
         this.setState({
@@ -77,13 +80,14 @@ class NotesList extends Component {
     }
 
     handleDelete() {
-        debugger
+        
         let id = this.state.id;
         this.props.actions.deleteNote(id)
+        toast.success('Note deleted sucessfully')
     }
 
     handleEditOpen(index) {
-        debugger
+        
         let currentData = this.state.notes
         let res = currentData[index]
         let description = currentData[index].description
@@ -96,7 +100,7 @@ class NotesList extends Component {
     }
 
     handleEditClose() {
-        debugger
+        
         this.setState({
             id: '',
             editOpen: false,
@@ -106,7 +110,7 @@ class NotesList extends Component {
     }
 
     handleUpdate(data) {
-        debugger
+        
         data.id = this.state.id
         this.props.actions.updateNote(data)
         this.setState({
@@ -115,31 +119,47 @@ class NotesList extends Component {
             title: '',
             description: ''
         })
+        toast.success('Note updated sucessfully')
+    }
+
+    handleDetailsOpen(index) {
+        
+        let currentData = this.state.notes
+        let res = currentData[index]
+        let title = res.title.replace(/ /g, '-');
+        this.props.history.push('/app/' + res._id + '/' + title)
     }
 
     handleDetails(index) {
-        debugger
         let currentData = this.state.notes
         let res = currentData[index]._id
         let title = currentData[index].title.replace(/ /g, '-');
-        this.props.history.push('/app/' + res + '/' + title)
+        this.props.history.push('/app/' + res);
     }
 
     render() {
         return (
             <div>
                 <AddButton handleModal={this.handleClose} />
+                {this.state.notes.length ? null : <MuiThemeProvider>
+                    <Card>
+                        <CardTitle title={'No notes added yet!'} />
+                        <CardText>
+                            {'Add one for you.'}
+                        </CardText>
+                    </Card>
+                </MuiThemeProvider>}
                 {this.state.notes.map(function (note, index) {
                     return <MuiThemeProvider>
                         <Card key={index}>
-                            <CardTitle title={note.title ? note.title : '-'} />
+                            <CardTitle title={note.title ? note.title : '-'} className="note_title" />
                             <CardText>
                                 {note.description ? note.description : '-'}
                             </CardText>
-                            <CardActions>
+                            <CardActions className="btn_not_action">
                                 <FlatButton label="Edit" primary={true} onClick={this.handleEditOpen.bind(this, index)} />
                                 <FlatButton label="Delete" onClick={this.handleDeleteOpen.bind(this, index)} />
-                                <FlatButton label="Details" onClick={this.handleDetails.bind(this, index)} />
+                                <FlatButton label="Details" onClick={this.handleDetailsOpen.bind(this, index)} />
                             </CardActions>
                         </Card>
                     </MuiThemeProvider>
@@ -167,13 +187,14 @@ class NotesList extends Component {
                         handleDelete={this.handleDelete.bind(this)}
                     />
                 </MuiThemeProvider>
+                <ToastContainer autoClose={1000}/>
             </div>
         );
     }
 };
 //this tells what state should expose on props
 function mapStateToProps(state, ownProps) {
-    debugger
+    
     return {
         notes: state.noteData.notes
     };

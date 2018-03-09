@@ -4,10 +4,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 class AddButton extends Component {
     render() {
         const style = {
-            margin: 12
+            margin: 12,
         };
         return (
-            <div>
+            <div className="add_new_note">
                 <MuiThemeProvider>
                     <RaisedButton
                         label="Add new note"

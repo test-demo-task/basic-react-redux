@@ -21,11 +21,14 @@ class DeleteNote extends Component {
                 <MuiThemeProvider>
                     <Dialog
                         title="Delete Note"
-                        actions={actions}
                         modal={false}
-                        open={this.props.open}
+                        open={this.props.open} className="mdoal_pop"
                     >
+                    <br/><br/>
                         Are you sure you want to delete this note ?
+                        <div className="modal_btn">
+                        {actions}
+                    </div>
                     </Dialog>
                 </MuiThemeProvider>
             </div>

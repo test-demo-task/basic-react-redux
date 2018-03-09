@@ -14,6 +14,9 @@ const styles = {
     title: {
         cursor: 'pointer',
     },
+    button: {
+        display: 'none',
+    }
 };
 class Dashboard extends Component {
     constructor(props) {
@@ -26,29 +29,37 @@ class Dashboard extends Component {
     }
 
     handleLogout() {
-        debugger
+        
         localStorage.clear();
-        this.props.history.push('/')
+        history.push('/')
+        // this.props.history.push('/')
+    }
+
+    componentWillMount() {
+        if (!localStorage.token) {
+            // this.props.history.push('/')
+            history.push('/')
+        }
     }
 
     render() {
         return (
-            <Router>
+
+            <div>
+                <MuiThemeProvider>
+                    <AppBar className="note_button"
+                        title={<span style={styles.title}>Notes</span>}
+                        iconElementRight={<FlatButton label="Log Out" onClick={this.handleLogout} />}
+                    />
+                </MuiThemeProvider>
+                {this.props.children}
                 <div>
-                    <MuiThemeProvider>
-                        <AppBar
-                            title={<span style={styles.title}>Notes</span>}
-                            iconElementRight={<FlatButton label="Log Out" onClick={this.handleLogout} />}
-                        />
-                    </MuiThemeProvider>
-                    <div>
-                        <Switch>
-                            <Route  path="/app/:id:title" component={NoteDetail} />
-                            <Route exact path="/app" component={NotesList} />
-                        </Switch>
-                    </div>
+                    {/* <Switch>
+                         <Route path="/app/:id" render={props => <NoteDetail  {...props} />} />
+                        <Route exact path="/app" render={props => <NotesList {...props} />} /> 
+                    </Switch> */}
                 </div>
-            </Router>
+            </div>
         )
     }
 }
