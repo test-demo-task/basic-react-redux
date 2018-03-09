@@ -33,7 +33,7 @@ class LoginSignUp extends Component {
     if(this.state.isLogin){
       let loginscreen=[];
       loginscreen.push(<SignUp parentContext={this}/>);
-      loginmessage = "Already registered.Go to Login";
+      loginmessage = "Already registered.Go to Sign In";
       this.setState({
                      loginscreen:loginscreen,
                      loginmessage:loginmessage,
